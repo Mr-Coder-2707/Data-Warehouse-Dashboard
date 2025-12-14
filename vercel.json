@@ -1,29 +1,13 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "cd web-frontend && npm install && npm run build",
+  "outputDirectory": "web-frontend/dist",
+  "installCommand": "npm install --prefix web-backend",
+  "devCommand": "cd web-frontend && npm run dev",
+  "framework": null,
+  "rewrites": [
     {
-      "src": "web-backend/package.json",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "web-frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "web-backend/src/server.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "web-frontend/dist/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }

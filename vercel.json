@@ -2,17 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "web-backend/src/server.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["web-backend/sql/**", "web-backend/src/**", "web-backend/data/**"]
-      }
+      "src": "web-backend/package.json",
+      "use": "@vercel/node"
     },
     {
       "src": "web-frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "web-frontend/dist"
+        "distDir": "dist"
       }
     }
   ],
@@ -23,8 +20,10 @@
     },
     {
       "src": "/(.*)",
-      "dest": "web-frontend/$1"
+      "dest": "web-frontend/dist/$1"
     }
   ],
-  "outputDirectory": "web-frontend/dist"
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

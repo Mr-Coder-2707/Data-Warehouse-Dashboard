@@ -1,48 +1,34 @@
-import sqlite3, { Database } from 'sqlite3';
+import { Pool, QueryResult } from 'pg';
 import path from 'path';
 import * as fs from 'fs';
 
-// Get the absolute path to the database
-// When running with ts-node-dev, we need to go from src/ to root
-const DB_PATH = process.env.DB_PATH 
-  ? path.resolve(process.cwd(), process.env.DB_PATH)
-  : path.resolve(process.cwd(), '../backend/gold.db');
+// PostgreSQL connection configuration
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
 
-console.log('🔍 Database path:', DB_PATH);
-console.log('📁 Current directory:', process.cwd());
+// Test connection on startup
+pool.on('connect', () => {
+  console.log('✅ Connected to PostgreSQL database');
+});
 
-let db: Database | null = null;
+pool.on('error', (err) => {
+  console.error('❌ Unexpected PostgreSQL error:', err);
+});
 
-export const getConnection = (): Database => {
-  if (db) {
-    return db;
-  }
-
-  // Check if database file exists
-  if (!fs.existsSync(DB_PATH)) {
-    console.error(`❌ Database file not found at: ${DB_PATH}`);
-    throw new Error(`Database file not found at: ${DB_PATH}`);
-  }
-
-  console.log(`📂 Connecting to database at: ${DB_PATH}`);
-
-  db = new sqlite3.Database(DB_PATH, (err) => {
-    if (err) {
-      console.error('❌ DATABASE CONNECTION ERROR:', err.message);
-      throw err;
-    }
-    console.log('✅ Connected to SQLite database');
-  });
-
-  return db;
+export const getConnection = () => {
+  return pool;
 };
 
 export const executeQuery = <T = any>(
   queryFile: string,
   params: any[] = []
 ): Promise<T[]> => {
-  return new Promise((resolve, reject) => {
-    const connection = getConnection();
+  return new Promise(async (resolve, reject) => {
     const sqlPath = path.resolve(process.cwd(), 'sql', queryFile);
     
     // Check if SQL file exists
@@ -53,16 +39,18 @@ export const executeQuery = <T = any>(
     }
     
     // Read SQL file
-    const sql = fs.readFileSync(sqlPath, 'utf-8');
+    let sql = fs.readFileSync(sqlPath, 'utf-8');
+    
+    // Convert SQLite syntax to PostgreSQL
+    sql = convertSqliteToPostgres(sql, params);
 
-    connection.all(sql, params, (err, rows) => {
-      if (err) {
-        console.error('Query Error:', err);
-        reject(err);
-      } else {
-        resolve(rows as T[]);
-      }
-    });
+    try {
+      const result: QueryResult = await pool.query(sql, params);
+      resolve(result.rows as T[]);
+    } catch (err) {
+      console.error('Query Error:', err);
+      reject(err);
+    }
   });
 };
 
@@ -70,29 +58,33 @@ export const executeQueryDirect = <T = any>(
   sql: string,
   params: any[] = []
 ): Promise<T[]> => {
-  return new Promise((resolve, reject) => {
-    const connection = getConnection();
+  return new Promise(async (resolve, reject) => {
+    // Convert SQLite syntax to PostgreSQL
+    sql = convertSqliteToPostgres(sql, params);
 
-    connection.all(sql, params, (err, rows) => {
-      if (err) {
-        console.error('Query Error:', err);
-        reject(err);
-      } else {
-        resolve(rows as T[]);
-      }
-    });
+    try {
+      const result: QueryResult = await pool.query(sql, params);
+      resolve(result.rows as T[]);
+    } catch (err) {
+      console.error('Query Error:', err);
+      reject(err);
+    }
   });
 };
 
-export const closeConnection = (): void => {
-  if (db) {
-    db.close((err) => {
-      if (err) {
-        console.error('Error closing database:', err);
-      } else {
-        console.log('Database connection closed');
-      }
-    });
-    db = null;
-  }
+// Helper function to convert SQLite queries to PostgreSQL
+const convertSqliteToPostgres = (sql: string, params: any[]): string => {
+  // Replace LIMIT clause
+  sql = sql.replace(/LIMIT\s+(\d+)/gi, 'LIMIT $1');
+  
+  // Replace ? placeholders with $1, $2, etc.
+  let paramIndex = 1;
+  sql = sql.replace(/\?/g, () => `$${paramIndex++}`);
+  
+  return sql;
+};
+
+export const closeConnection = async (): Promise<void> => {
+  await pool.end();
+  console.log('Database connection pool closed');
 };

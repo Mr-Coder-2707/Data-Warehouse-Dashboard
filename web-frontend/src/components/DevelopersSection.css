@@ -1,0 +1,350 @@
+.developers-section {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 50px 40px;
+  margin-top: 40px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.developers-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.developers-header {
+  text-align: center;
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.developers-header h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.developers-header h2 .material-icons {
+  font-size: 3rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.developers-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.developers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+  position: relative;
+  z-index: 1;
+}
+
+.developer-card {
+  background: rgba(17, 8, 35, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.developer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-card);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.developer-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--neon-purple);
+}
+
+.developer-card:hover::before {
+  opacity: 1;
+}
+
+.developer-card:hover .developer-icon {
+  transform: scale(1.1) rotate(360deg);
+  background: var(--gradient-primary);
+}
+
+.developer-icon {
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  background: rgba(147, 51, 234, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid var(--primary-purple);
+  position: relative;
+  z-index: 1;
+}
+
+.developer-icon .material-icons {
+  font-size: 2.5rem;
+  color: var(--accent-purple);
+  transition: color 0.4s;
+}
+
+.developer-card:hover .developer-icon .material-icons {
+  color: white;
+}
+
+.developer-info {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.developer-info h3 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-family: 'Poppins', sans-serif;
+}
+
+.developer-role {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.developer-role::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--accent-purple);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px var(--neon-purple);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
+
+/* Responsive Design */
+
+/* Tablets (576px - 991px) */
+@media (max-width: 991px) {
+  .developers-section {
+    padding: 40px 30px;
+  }
+
+  .developers-header h2 {
+    font-size: 2rem;
+  }
+
+  .developers-header h2 .material-icons {
+    font-size: 2.5rem;
+  }
+
+  .developers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .developer-card {
+    padding: 25px;
+  }
+
+  .developer-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+  }
+
+  .developer-icon .material-icons {
+    font-size: 2rem;
+  }
+
+  .developer-info h3 {
+    font-size: 1rem;
+  }
+
+  .developer-role {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile (320px - 575px) */
+@media (max-width: 575px) {
+  .developers-section {
+    padding: 30px 20px;
+    border-radius: 18px;
+  }
+
+  .developers-header {
+    margin-bottom: 30px;
+  }
+
+  .developers-header h2 {
+    font-size: 1.6rem;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .developers-header h2 .material-icons {
+    font-size: 2rem;
+  }
+
+  .developers-header p {
+    font-size: 0.95rem;
+  }
+
+  .developers-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .developer-card {
+    padding: 20px;
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .developer-icon {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+  }
+
+  .developer-icon .material-icons {
+    font-size: 2.5rem;
+  }
+
+  .developer-info h3 {
+    font-size: 1rem;
+  }
+
+  .developer-role {
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra Small Screens (below 375px) */
+@media (max-width: 374px) {
+  .developers-section {
+    padding: 25px 15px;
+  }
+
+  .developers-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .developer-card {
+    padding: 18px 15px;
+  }
+
+  .developer-icon {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+  }
+
+  .developer-icon .material-icons {
+    font-size: 2rem;
+  }
+
+  .developer-info h3 {
+    font-size: 0.95rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .developer-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-card);
+  }
+
+  .developer-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+
+  .developer-icon {
+    transition: transform 0.3s;
+  }
+
+  .developer-card:hover .developer-icon {
+    transform: scale(1);
+  }
+}
+
+/* Print styles */
+@media print {
+  .developers-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .developer-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

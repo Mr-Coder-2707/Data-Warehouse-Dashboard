@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "web-backend/src/server.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["web-backend/sql/**", "web-backend/src/**", "web-backend/data/**"]
+      }
+    },
+    {
+      "src": "web-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "web-frontend/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "web-backend/src/server.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "web-frontend/$1"
+    }
+  ],
+  "outputDirectory": "web-frontend/dist"
+}

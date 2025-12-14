@@ -1,0 +1,15 @@
+{
+  "name": "data-warehouse-web-app",
+  "version": "1.0.0",
+  "description": "Data Warehouse Web Application - Full Stack",
+  "scripts": {
+    "backend": "cd web-backend && npm run dev",
+    "frontend": "cd web-frontend && npm run dev",
+    "backend:build": "cd web-backend && npm run build",
+    "frontend:build": "cd web-frontend && npm run build",
+    "install:all": "cd web-backend && npm install && cd ../web-frontend && npm install"
+  },
+  "keywords": ["data-warehouse", "typescript", "react", "express"],
+  "author": "",
+  "license": "ISC"
+}
